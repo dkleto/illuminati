@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'boot'
 
-Bundler.setup(:default, ENV['RACK_ENV'])
+Bundler.require(:default, ENV['RACK_ENV'])
 
 Dir[File.expand_path('../../api/*.rb', __FILE__)].each do |f|
   require f

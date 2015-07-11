@@ -18,13 +18,13 @@ module Illuminati
           end
         end
 
-        run Acme::App.new
+        run Illuminati::App.new
       end.to_app
     end
 
     def call(env)
       # api
-      response = Acme::API.call(env)
+      response = Illuminati::API.call(env)
 
       # Check if the App wants us to pass the response along to others
       if response[1]['X-Cascade'] == 'pass'
