@@ -7,4 +7,5 @@ gem 'rack-cors', '~> 0.4.0'
 group :development do
 end
 group :test do
+  gem 'airborne'
 end
