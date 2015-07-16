@@ -2,6 +2,6 @@ module Illuminati
   class API < Grape::API
     prefix 'api'
     format :json
-    mount ::Illuminati::Test
+    mount ::Illuminati::Schedule
   end
 end
