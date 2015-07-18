@@ -12,8 +12,8 @@ describe Illuminati::API do
       {
         :command => 'command',
         :transition_time => 0,
-        :time => 1437209443,
-        :repeat => 1,
+        :time => Time.new(2015, 07, 18, 0, 0, 0, "+10:00"),
+        :repeat => true,
         :cron_minute => '30',
         :cron_hour => '17',
         :cron_day => '*',
