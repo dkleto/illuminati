@@ -12,7 +12,7 @@ describe Illuminati::API do
       {
         :command => 'command',
         :transition_time => 0,
-        :time => Time.new(2015, 07, 18, 0, 0, 0, "+10:00"),
+        :time => DateTime.new(2015, 07, 18, 0, 0, 0),
         :repeat => true,
         :cron_minute => '30',
         :cron_hour => '17',
