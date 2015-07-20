@@ -17,25 +17,27 @@ module Illuminati
       end
 
       desc "Creates a new schedule event"
-      post do
         params do
           requires :command, type: String
-          requires :time, type: Datetime, default: Time.now
+          requires :time, type: DateTime, default: DateTime.now
           optional :transition_time, type: Integer, values: 0..1800, default: 0
           optional :repeat, type: Boolean, default: false
-          given :repeat do
-            cron_regexp = /^[0-9\/\*]+$/
-            optional :cron_minute, type: String, regexp: cron_regexp
-            optional :cron_hour, type: String, regexp: cron_regexp
-            optional :cron_day, type: String, regexp: cron_regexp
-            optional :cron_month, type: String, regexp: cron_regexp
-            optional :cron_weekday, type: String, regexp: cron_regexp
-            all_or_none_of :cron_minute, :cron_hour, :cron_day, :cron_month,
-              :cron_weekday
-          end
+          cron_regexp = /^[0-9\/\*,-]+$/
+          optional :cron_minute, type: String, regexp: cron_regexp
+          optional :cron_hour, type: String, regexp: cron_regexp
+          optional :cron_day, type: String, regexp: cron_regexp
+          optional :cron_month, type: String, regexp: cron_regexp
+          optional :cron_weekday, type: String, regexp: cron_regexp
+          all_or_none_of :cron_minute, :cron_hour, :cron_day, :cron_month,
+              :cron_weekday, :repeat
         end
-        schedule = Illuminati::Models::Schedule.create!(declared(params))
-        schedule.as_json
+      post do
+        schedule = Hash.new
+        declared(params).each do |key, value|
+          schedule[key] = value
+        end
+        new_schedule = Illuminati::Models::Schedule.create!(schedule)
+        new_schedule.as_json
       end
     end
   end
