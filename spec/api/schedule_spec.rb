@@ -99,6 +99,7 @@ describe Illuminati::API do
       }.to_not change(Illuminati::Models::Schedule, :count)
       @schedule1.reload
       schedule = Illuminati::Models::Schedule.find_by(_id: @schedule1.id)
+      expect(schedule).to be_truthy
       schedule1_hash.merge(schedule2_hash).each do |key, value|
         expect(schedule[key]).to eq(value)
       end
