@@ -44,9 +44,9 @@ module Illuminati
       params do
         requires '_id'
         optional :command, type: String
-        optional :time, type: DateTime, default: DateTime.now
-        optional :transition_time, type: Integer, values: 0..1800, default: 0
-        optional :repeat, type: Boolean, default: false
+        optional :time, type: DateTime
+        optional :transition_time, type: Integer, values: 0..1800
+        optional :repeat, type: Boolean
         cron_regexp = /^[0-9\/\*,-]+$/
         optional :cron_minute, type: String, regexp: cron_regexp
         optional :cron_hour, type: String, regexp: cron_regexp
@@ -60,7 +60,8 @@ module Illuminati
         schedule = Illuminati::Models::Schedule.find(params[:_id])
         error! "Not Found", 404 unless schedule
         values = Hash.new
-        declared(params).each do |key, value|
+        declared_params = declared(params, include_missing: false)
+        declared_params.each do |key, value|
           values[key] = value
         end
         schedule.update_attributes!(values)
