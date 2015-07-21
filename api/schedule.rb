@@ -17,20 +17,20 @@ module Illuminati
       end
 
       desc "Creates a new schedule event"
-        params do
-          requires :command, type: String
-          requires :time, type: DateTime, default: DateTime.now
-          optional :transition_time, type: Integer, values: 0..1800, default: 0
-          optional :repeat, type: Boolean, default: false
-          cron_regexp = /^[0-9\/\*,-]+$/
-          optional :cron_minute, type: String, regexp: cron_regexp
-          optional :cron_hour, type: String, regexp: cron_regexp
-          optional :cron_day, type: String, regexp: cron_regexp
-          optional :cron_month, type: String, regexp: cron_regexp
-          optional :cron_weekday, type: String, regexp: cron_regexp
-          all_or_none_of :cron_minute, :cron_hour, :cron_day, :cron_month,
-              :cron_weekday
-        end
+      params do
+        requires :command, type: String
+        requires :time, type: DateTime, default: DateTime.now
+        optional :transition_time, type: Integer, values: 0..1800, default: 0
+        optional :repeat, type: Boolean, default: false
+        cron_regexp = /^[0-9\/\*,-]+$/
+        optional :cron_minute, type: String, regexp: cron_regexp
+        optional :cron_hour, type: String, regexp: cron_regexp
+        optional :cron_day, type: String, regexp: cron_regexp
+        optional :cron_month, type: String, regexp: cron_regexp
+        optional :cron_weekday, type: String, regexp: cron_regexp
+        all_or_none_of :cron_minute, :cron_hour, :cron_day, :cron_month,
+            :cron_weekday
+      end
       post do
         schedule = Hash.new
         declared(params).each do |key, value|
@@ -41,21 +41,21 @@ module Illuminati
       end
 
       desc "Update a specific schedule event by ID"
-        params do
-          requires '_id'
-          optional :command, type: String
-          optional :time, type: DateTime, default: DateTime.now
-          optional :transition_time, type: Integer, values: 0..1800, default: 0
-          optional :repeat, type: Boolean, default: false
-          cron_regexp = /^[0-9\/\*,-]+$/
-          optional :cron_minute, type: String, regexp: cron_regexp
-          optional :cron_hour, type: String, regexp: cron_regexp
-          optional :cron_day, type: String, regexp: cron_regexp
-          optional :cron_month, type: String, regexp: cron_regexp
-          optional :cron_weekday, type: String, regexp: cron_regexp
-          all_or_none_of :cron_minute, :cron_hour, :cron_day, :cron_month,
-              :cron_weekday
-        end
+      params do
+        requires '_id'
+        optional :command, type: String
+        optional :time, type: DateTime, default: DateTime.now
+        optional :transition_time, type: Integer, values: 0..1800, default: 0
+        optional :repeat, type: Boolean, default: false
+        cron_regexp = /^[0-9\/\*,-]+$/
+        optional :cron_minute, type: String, regexp: cron_regexp
+        optional :cron_hour, type: String, regexp: cron_regexp
+        optional :cron_day, type: String, regexp: cron_regexp
+        optional :cron_month, type: String, regexp: cron_regexp
+        optional :cron_weekday, type: String, regexp: cron_regexp
+        all_or_none_of :cron_minute, :cron_hour, :cron_day, :cron_month,
+            :cron_weekday
+      end
       put ':_id' do
         schedule = Illuminati::Models::Schedule.find(params[:_id])
         error! "Not Found", 404 unless schedule
@@ -68,10 +68,10 @@ module Illuminati
       end
 
       desc "Delete a specific schedule event by ID"
+      params do
+        requires '_id'
+      end
       delete ':_id' do
-        params do
-          requires '_id'
-        end
         schedule = Illuminati::Models::Schedule.find(params[:_id])
         error! "Not Found", 404 unless schedule
         schedule.destroy
