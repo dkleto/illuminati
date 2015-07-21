@@ -63,9 +63,9 @@ describe Illuminati::API do
       expect(last_response.status).to eq(404)
     end
 
-    it 'returns 200 when deleting nonexistent schedule event' do
-      delete '/api/schedule/1'
-      expect(last_response.status).to eq(200)
+    it 'returns 404 when deleting nonexistent schedule event' do
+      delete '/api/schedule/lkj98737'
+      expect(last_response.status).to eq(404)
     end
   end
 
