@@ -29,7 +29,7 @@ module Illuminati
           optional :cron_month, type: String, regexp: cron_regexp
           optional :cron_weekday, type: String, regexp: cron_regexp
           all_or_none_of :cron_minute, :cron_hour, :cron_day, :cron_month,
-              :cron_weekday, :repeat
+              :cron_weekday
         end
       post do
         schedule = Hash.new
