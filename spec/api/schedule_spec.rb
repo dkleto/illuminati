@@ -93,10 +93,9 @@ describe Illuminati::API do
         put_array += ["#{key}=#{value}"]
       end
       put_string += put_array.join("&")
-
       expect {
         put put_string
-        expect(last_response.status).to eq(201)
+        expect(last_response.status).to eq(200)
       }.to_not change(Illuminati::Models::Schedule, :count)
       @schedule1.reload
       schedule = Illuminati::Models::Schedule.find_by(_id: @schedule1.id)
