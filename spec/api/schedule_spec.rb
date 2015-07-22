@@ -27,6 +27,14 @@ describe Illuminati::API do
         :transition_time => 2
       }
   }
+  let(:schedule3_hash) {
+    {
+        :command => 'another command',
+        :transition_time => 15,
+        :time => DateTime.new(2015, 07, 18, 0, 0, 0),
+        :repeat => false
+    }
+  }
 
   context "with no schedule events" do
     it 'returns an empty collection of schedule events' do
@@ -72,12 +80,13 @@ describe Illuminati::API do
   context "with schedule event" do
     before do |each|
       @schedule1 = Illuminati::Models::Schedule.create!(schedule1_hash)
+      @schedule2 = Illuminati::Models::Schedule.create!(schedule3_hash)
     end
 
     it "returns the collection of schedule events" do
       get '/api/schedules'
       expect(last_response.status).to eq(200)
-      expect(last_response.body).to eq([@schedule1].to_json)
+      expect(last_response.body).to eq([@schedule1, @schedule2].to_json)
     end
 
     it "returns a specific schedule event based on ID" do
