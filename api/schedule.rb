@@ -10,13 +10,27 @@ module Illuminati
 
     namespace :schedule do
       desc "Returns schedule event by ID"
+      params do
+        requires '_id'
+      end
       get ":_id" do
         schedule = Illuminati::Models::Schedule.find(params[:_id])
         error! "Not found", 404 unless schedule
         schedule.as_json
       end
 
-      desc "Creates a new schedule event"
+      desc "Deletes a specific schedule event by ID"
+      params do
+        requires '_id'
+      end
+      delete ':_id' do
+        schedule = Illuminati::Models::Schedule.find(params[:_id])
+        error! "Not Found", 404 unless schedule
+        schedule.destroy
+        schedule.as_json
+      end
+
+      # These params will be used for both the create and update methods.
       params do
         requires :command, type: String
         requires :time, type: DateTime, default: DateTime.now
@@ -31,6 +45,8 @@ module Illuminati
         all_or_none_of :cron_minute, :cron_hour, :cron_day, :cron_month,
             :cron_weekday
       end
+
+      desc "Creates a new schedule event"
       post do
         schedule = Hash.new
         declared(params).each do |key, value|
@@ -40,21 +56,13 @@ module Illuminati
         new_schedule.as_json
       end
 
-      desc "Update a specific schedule event by ID"
+      desc "Updates a specific schedule event by ID"
       params do
         requires '_id'
         optional :command, type: String
         optional :time, type: DateTime
         optional :transition_time, type: Integer, values: 0..1800
         optional :repeat, type: Boolean
-        cron_regexp = /^[0-9\/\*,-]+$/
-        optional :cron_minute, type: String, regexp: cron_regexp
-        optional :cron_hour, type: String, regexp: cron_regexp
-        optional :cron_day, type: String, regexp: cron_regexp
-        optional :cron_month, type: String, regexp: cron_regexp
-        optional :cron_weekday, type: String, regexp: cron_regexp
-        all_or_none_of :cron_minute, :cron_hour, :cron_day, :cron_month,
-            :cron_weekday
       end
       put ':_id' do
         schedule = Illuminati::Models::Schedule.find(params[:_id])
@@ -68,16 +76,6 @@ module Illuminati
         schedule.as_json
       end
 
-      desc "Delete a specific schedule event by ID"
-      params do
-        requires '_id'
-      end
-      delete ':_id' do
-        schedule = Illuminati::Models::Schedule.find(params[:_id])
-        error! "Not Found", 404 unless schedule
-        schedule.destroy
-        schedule.as_json
-      end
     end
   end
 end
