@@ -6,7 +6,7 @@ require 'boot'
 ENV['RACK_ENV'] ||= 'test'
 Bundler.require(:default, ENV['RACK_ENV'])
 
-['../../config/initializers/*.rb', '../../models/*.rb'].each do |path|
+['../../config/initializers/*.rb', '../../models/*.rb', '../../cli/*.rb'].each do |path|
   Dir[File.expand_path(path, __FILE__)].each do |f|
     require f
   end

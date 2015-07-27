@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'api_helper'
 
 describe Illuminati::API do
   include Rack::Test::Methods
