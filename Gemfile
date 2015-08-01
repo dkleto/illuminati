@@ -7,6 +7,7 @@ gem 'mongoid'
 gem 'rufus-scheduler'
 
 group :test do
+  gem 'rake'
   gem 'rspec'
   gem 'rack-test'
   gem 'capybara'
