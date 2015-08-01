@@ -9,6 +9,19 @@ module Illuminati
     end
 
     namespace :schedule do
+      helpers do
+        params :add_update do
+          cron_regexp = /^[0-9\/\*,-]+$/
+          optional :cron_minute, type: String, regexp: cron_regexp
+          optional :cron_hour, type: String, regexp: cron_regexp
+          optional :cron_day, type: String, regexp: cron_regexp
+          optional :cron_month, type: String, regexp: cron_regexp
+          optional :cron_weekday, type: String, regexp: cron_regexp
+          all_or_none_of :cron_minute, :cron_hour, :cron_day, :cron_month,
+              :cron_weekday
+        end
+      end
+
       desc "Returns schedule event by ID"
       params do
         requires '_id'
@@ -30,23 +43,14 @@ module Illuminati
         schedule.as_json
       end
 
-      # These params will be used for both the create and update methods.
+      desc "Creates a new schedule event"
       params do
+        use :add_update
         requires :command, type: String
         requires :time, type: DateTime, default: DateTime.now
         optional :transition_time, type: Integer, values: 0..1800, default: 0
         optional :repeat, type: Boolean, default: false
-        cron_regexp = /^[0-9\/\*,-]+$/
-        optional :cron_minute, type: String, regexp: cron_regexp
-        optional :cron_hour, type: String, regexp: cron_regexp
-        optional :cron_day, type: String, regexp: cron_regexp
-        optional :cron_month, type: String, regexp: cron_regexp
-        optional :cron_weekday, type: String, regexp: cron_regexp
-        all_or_none_of :cron_minute, :cron_hour, :cron_day, :cron_month,
-            :cron_weekday
       end
-
-      desc "Creates a new schedule event"
       post do
         schedule = Hash.new
         declared(params).each do |key, value|
@@ -58,6 +62,7 @@ module Illuminati
 
       desc "Updates a specific schedule event by ID"
       params do
+        use :add_update
         requires '_id'
         optional :command, type: String
         optional :time, type: DateTime
