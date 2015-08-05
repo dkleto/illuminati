@@ -11,14 +11,15 @@ module Illuminati
     namespace :schedule do
       helpers do
         params :add_update do
-          cron_regexp = /^[0-9\/\*,-]+$/
-          optional :cron_minute, type: String, regexp: cron_regexp
-          optional :cron_hour, type: String, regexp: cron_regexp
-          optional :cron_day, type: String, regexp: cron_regexp
-          optional :cron_month, type: String, regexp: cron_regexp
-          optional :cron_weekday, type: String, regexp: cron_regexp
-          all_or_none_of :cron_minute, :cron_hour, :cron_day, :cron_month,
-              :cron_weekday
+          optional :repeat, type: Boolean
+          given :repeat do
+            cron_regexp = /^[0-9\/\*,-]+$/
+            requires :cron_minute, type: String, regexp: cron_regexp
+            requires :cron_hour, type: String, regexp: cron_regexp
+            requires :cron_day, type: String, regexp: cron_regexp
+            requires :cron_month, type: String, regexp: cron_regexp
+            requires :cron_weekday, type: String, regexp: cron_regexp
+          end
         end
       end
 
@@ -49,12 +50,13 @@ module Illuminati
         requires :command, type: String
         requires :time, type: DateTime, default: DateTime.now
         optional :transition_time, type: Integer, values: 0..1800, default: 0
-        optional :repeat, type: Boolean, default: false
       end
       post do
         schedule = Hash.new
-        declared(params).each do |key, value|
-          schedule[key] = value
+        declared(params, include_missing: false).each do |key, value|
+          if value
+            schedule[key] = value
+          end
         end
         new_schedule = Illuminati::Models::Schedule.create!(schedule)
         new_schedule.as_json
@@ -62,12 +64,11 @@ module Illuminati
 
       desc "Updates a specific schedule event by ID"
       params do
-        use :add_update
         requires '_id'
+        use :add_update
         optional :command, type: String
         optional :time, type: DateTime
         optional :transition_time, type: Integer, values: 0..1800
-        optional :repeat, type: Boolean
       end
       put ':_id' do
         schedule = Illuminati::Models::Schedule.find(params[:_id])
@@ -75,7 +76,9 @@ module Illuminati
         values = Hash.new
         declared_params = declared(params, include_missing: false)
         declared_params.each do |key, value|
-          values[key] = value
+          if value
+            values[key] = value
+          end
         end
         schedule.update_attributes!(values)
         schedule.as_json
