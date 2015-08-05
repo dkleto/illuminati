@@ -18,7 +18,7 @@ describe Illuminati::Scheduler do
     {
       :command => 'command2',
       :transition_time => 0,
-      :time => DateTime.now + 1,
+      :time => DateTime.now + 2,
       :repeat => false
     }
   }
@@ -56,18 +56,27 @@ describe Illuminati::Scheduler do
       @job2 = Illuminati::Models::Schedule.create!(job2_hash)
       @job3 = Illuminati::Models::Schedule.create!(job3_hash)
       @job4 = Illuminati::Models::Schedule.create!(job4_hash)
+      @s = Rufus::Scheduler.singleton
     end
     it 'schedules once-off jobs on initialisation' do
-      event_count_before = Rufus::Scheduler.singleton.at_jobs.count
-      Illuminati::Scheduler.new(Rufus::Scheduler.singleton)
-      event_count_after = Rufus::Scheduler.singleton.at_jobs.count
+      event_count_before = @s.at_jobs.count
+      Illuminati::Scheduler.new(@s)
+      event_count_after = @s.at_jobs.count
       expect(event_count_after).to eq(event_count_before + 1)
+      @s.at_jobs.each do |s|
+        f_string = "%F%H-%M%z"
+        expect(s.time.strftime(f_string)).to eq(@job2[:time].strftime(f_string))
+      end
     end
     it 'schedules repeat jobs on initialisation' do
-      event_count_before = Rufus::Scheduler.singleton.cron_jobs.count
-      Illuminati::Scheduler.new(Rufus::Scheduler.singleton)
-      event_count_after = Rufus::Scheduler.singleton.cron_jobs.count
+      event_count_before = @s.cron_jobs.count
+      Illuminati::Scheduler.new(@s)
+      event_count_after = @s.cron_jobs.count
       expect(event_count_after).to eq(event_count_before + 1)
+      @s.cron_jobs.each do |s|
+        f_string = "%F%H-%M%z"
+        expect(s.next_time.strftime(f_string)).to eq(@job1[:time].strftime(f_string))
+      end
     end
   end
 end
