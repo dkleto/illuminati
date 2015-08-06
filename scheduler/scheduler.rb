@@ -2,11 +2,15 @@ module Illuminati
   class Scheduler
     def initialize(scheduler)
       @schedule = Illuminati::Models::Schedule
+      @scheduler = scheduler
+      sync
+    end
+
+    def sync
       repeat_jobs = @schedule.where(
           :time.gte => DateTime.now, :repeat => true)
       onceoff_jobs = @schedule.where(
           :time.gte => DateTime.now, :repeat => false)
-      @scheduler = scheduler
 
       onceoff_jobs.each do |job|
         @scheduler.at job[:time].to_s do

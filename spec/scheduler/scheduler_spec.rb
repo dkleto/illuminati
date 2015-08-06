@@ -52,15 +52,16 @@ describe Illuminati::Scheduler do
   end
   context 'with schedule jobs' do
     before do |each|
+      @s = Rufus::Scheduler.singleton
+      @scheduler = Illuminati::Scheduler.new(@s)
       @job1 = Illuminati::Models::Schedule.create!(job1_hash)
       @job2 = Illuminati::Models::Schedule.create!(job2_hash)
       @job3 = Illuminati::Models::Schedule.create!(job3_hash)
       @job4 = Illuminati::Models::Schedule.create!(job4_hash)
-      @s = Rufus::Scheduler.singleton
     end
-    it 'schedules once-off jobs on initialisation' do
+    it 'schedules once-off jobs' do
       event_count_before = @s.at_jobs.count
-      Illuminati::Scheduler.new(@s)
+      @scheduler.sync
       event_count_after = @s.at_jobs.count
       expect(event_count_after).to eq(event_count_before + 1)
       @s.at_jobs.each do |s|
@@ -68,9 +69,9 @@ describe Illuminati::Scheduler do
         expect(s.time.strftime(f_string)).to eq(@job2[:time].strftime(f_string))
       end
     end
-    it 'schedules repeat jobs on initialisation' do
+    it 'schedules repeat jobs' do
       event_count_before = @s.cron_jobs.count
-      Illuminati::Scheduler.new(@s)
+      @scheduler.sync
       event_count_after = @s.cron_jobs.count
       expect(event_count_after).to eq(event_count_before + 1)
       @s.cron_jobs.each do |s|
