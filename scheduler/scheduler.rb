@@ -26,5 +26,9 @@ module Illuminati
         end
       end
     end
+
+    def clear
+      @scheduler.jobs.each(&:unschedule)
+    end
   end
 end

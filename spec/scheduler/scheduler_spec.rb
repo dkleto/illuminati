@@ -79,5 +79,15 @@ describe Illuminati::Scheduler do
         expect(s.next_time.strftime(f_string)).to eq(@job1[:time].strftime(f_string))
       end
     end
+    it 'clears all jobs' do
+      @s.at (DateTime.now + 1).to_s do
+        puts 'test'
+      end
+      @s.cron "* * * * *", :first_at => (DateTime.now + 1).to_s do
+        puts 'test'
+      end
+      @scheduler.clear
+      expect(@s.jobs.count).to eq(0)
+    end
   end
 end
