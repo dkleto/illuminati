@@ -5,6 +5,7 @@ gem 'grape', :git => 'https://github.com/ruby-grape/grape.git', :ref => '0dfc1cc
 gem 'rack-cors', '~> 0.4.0'
 gem 'mongoid'
 gem 'rufus-scheduler'
+gem 'grape-swagger'
 
 group :test do
   gem 'rspec'

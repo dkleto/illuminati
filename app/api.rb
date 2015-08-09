@@ -3,5 +3,6 @@ module Illuminati
     prefix 'api'
     format :json
     mount ::Illuminati::Schedule
+    add_swagger_documentation
   end
 end
