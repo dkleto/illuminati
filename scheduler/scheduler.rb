@@ -3,7 +3,6 @@ module Illuminati
     def initialize(scheduler)
       @schedule = Illuminati::Models::Schedule
       @scheduler = scheduler
-      sync
     end
 
     def sync
