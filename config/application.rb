@@ -16,3 +16,5 @@ end
 
 require 'api'
 require 'illuminati_app'
+scheduler = Illuminati::Scheduler.new(Rufus::Scheduler.singleton)
+scheduler.sync

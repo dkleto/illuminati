@@ -21,6 +21,12 @@ module Illuminati
             requires :cron_weekday, type: String, regexp: cron_regexp
           end
         end
+
+        def scheduler_sync
+          scheduler = Illuminati::Scheduler.new(Rufus::Scheduler.singleton)
+          scheduler.clear
+          scheduler.sync
+        end
       end
 
       desc "Returns schedule event by ID"
@@ -42,6 +48,7 @@ module Illuminati
         error! "Not Found", 404 unless schedule
         schedule.destroy
         schedule.as_json
+        scheduler_sync
       end
 
       desc "Creates a new schedule event"
@@ -60,6 +67,7 @@ module Illuminati
         end
         new_schedule = Illuminati::Models::Schedule.create!(schedule)
         new_schedule.as_json
+        scheduler_sync
       end
 
       desc "Updates a specific schedule event by ID"
@@ -82,6 +90,7 @@ module Illuminati
         end
         schedule.update_attributes!(values)
         schedule.as_json
+        scheduler_sync
       end
 
     end
