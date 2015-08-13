@@ -47,8 +47,8 @@ module Illuminati
         schedule = Illuminati::Models::Schedule.find(params[:_id])
         error! "Not Found", 404 unless schedule
         schedule.destroy
-        schedule.as_json
         scheduler_sync
+        schedule.as_json
       end
 
       desc "Creates a new schedule event"
@@ -66,8 +66,8 @@ module Illuminati
           end
         end
         new_schedule = Illuminati::Models::Schedule.create!(schedule)
-        new_schedule.as_json
         scheduler_sync
+        new_schedule.as_json
       end
 
       desc "Updates a specific schedule event by ID"
@@ -89,8 +89,8 @@ module Illuminati
           end
         end
         schedule.update_attributes!(values)
-        schedule.as_json
         scheduler_sync
+        schedule.as_json
       end
 
     end
