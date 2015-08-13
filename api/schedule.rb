@@ -1,6 +1,15 @@
 module Illuminati
   class Schedule < Grape::API
     format :json
+
+    helpers do
+      def scheduler_sync
+        scheduler = Illuminati::Scheduler.new(Rufus::Scheduler.singleton)
+        scheduler.clear
+        scheduler.sync
+      end
+    end
+
     namespace :schedules do
       desc "Returns all schedule events"
       get do
@@ -20,12 +29,6 @@ module Illuminati
             requires :cron_month, type: String, regexp: cron_regexp
             requires :cron_weekday, type: String, regexp: cron_regexp
           end
-        end
-
-        def scheduler_sync
-          scheduler = Illuminati::Scheduler.new(Rufus::Scheduler.singleton)
-          scheduler.clear
-          scheduler.sync
         end
       end
 
