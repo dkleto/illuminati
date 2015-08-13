@@ -42,7 +42,7 @@ describe Illuminati::Scheduler do
       :time => DateTime.now - 1
     }
   }
-  context 'with no schedule jobs' do
+  context 'with no schedule events' do
     it 'does not schedule any changes' do
       event_count_before = Rufus::Scheduler.singleton.at_jobs.count
       Illuminati::Scheduler.new(Rufus::Scheduler.singleton)
@@ -50,7 +50,7 @@ describe Illuminati::Scheduler do
       expect(event_count_after).to eq(event_count_before)
     end
   end
-  context 'with schedule jobs' do
+  context 'with schedule events' do
     before do |each|
       @s = Rufus::Scheduler.singleton
       @scheduler = Illuminati::Scheduler.new(@s)
