@@ -6,6 +6,7 @@ gem 'rack-cors', '~> 0.4.0'
 gem 'mongoid'
 gem 'rufus-scheduler'
 gem 'grape-swagger', :git => 'https://github.com/tim-vandecasteele/grape-swagger.git'
+gem 'grape_logging'
 
 group :test do
   gem 'rspec'
