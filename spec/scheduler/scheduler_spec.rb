@@ -39,7 +39,7 @@ describe Illuminati::Scheduler do
     {
       :command => 'command4',
       :transition_time => 10,
-      :time => DateTime.now - 1
+      :time => DateTime.now + 0.5
     }
   }
   context 'with no schedule events' do
@@ -58,25 +58,32 @@ describe Illuminati::Scheduler do
       @job2 = Illuminati::Models::Schedule.create!(job2_hash)
       @job3 = Illuminati::Models::Schedule.create!(job3_hash)
       @job4 = Illuminati::Models::Schedule.create!(job4_hash)
+      @f_string = "%F%H-%M%z"
     end
     it 'schedules once-off jobs' do
       event_count_before = @s.at_jobs.count
       @scheduler.sync
       event_count_after = @s.at_jobs.count
-      expect(event_count_after).to eq(event_count_before + 1)
-      @s.at_jobs.each do |s|
-        f_string = "%F%H-%M%z"
-        expect(s.time.strftime(f_string)).to eq(@job2[:time].strftime(f_string))
+      expect(event_count_after).to eq(event_count_before + 2)
+      # Both job2 and job4 should be scheduled.
+      [@job2[:time], @job4[:time]].each do |time|
+        expect(@s.at_jobs.find do |job|
+                  job.time.strftime(@f_string) == time.strftime(@f_string)
+               end
+              ).to_not be_nil
       end
     end
     it 'schedules repeat jobs' do
       event_count_before = @s.cron_jobs.count
       @scheduler.sync
       event_count_after = @s.cron_jobs.count
-      expect(event_count_after).to eq(event_count_before + 1)
-      @s.cron_jobs.each do |s|
-        f_string = "%F%H-%M%z"
-        expect(s.next_time.strftime(f_string)).to eq(@job1[:time].strftime(f_string))
+      expect(event_count_after).to eq(event_count_before + 2)
+      # The next scheduled cron job should be job1.
+      [@job1[:time]].each do |time|
+        expect(@s.cron_jobs.find do |job|
+                  job.next_time.strftime(@f_string) == time.strftime(@f_string)
+               end
+              ).to_not be_nil
       end
     end
     it 'clears all jobs' do
