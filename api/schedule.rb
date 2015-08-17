@@ -1,12 +1,23 @@
 module Illuminati
   class Schedule < Grape::API
     format :json
+    file_opts = File::WRONLY | File::APPEND | File::CREAT
+    @logger = Logger.new(File.open(ENV['illuminati.logpath'], file_opts))
+    if ENV['RACK_ENV'] == 'production' then
+      @logger.level = Logger::INFO
+    else
+      @logger.level = Logger::DEBUG
+    end
+    logger @logger
 
     helpers do
       def scheduler_sync
         scheduler = Illuminati::Scheduler.new(Rufus::Scheduler.singleton)
         scheduler.clear
         scheduler.sync
+      end
+      def logger
+        API.logger
       end
     end
 
