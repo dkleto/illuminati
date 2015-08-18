@@ -7,6 +7,7 @@ gem 'mongoid'
 gem 'rufus-scheduler'
 gem 'grape-swagger'
 gem 'grape_logging'
+gem 'hue'
 
 group :test do
   gem 'rspec'
