@@ -3,8 +3,13 @@ module Illuminati
     class Schedule
       include Mongoid::Document
 
-      field :command, type: String
-      field :transition_time, type: Integer
+      field :on, type: Boolean
+      field :bri, type: Integer
+      field :hue, type: Integer
+      field :sat, type: Integer
+      field :alert, type: String
+      field :xy, type: Array
+      field :transitiontime, type: Integer
       field :time, type: DateTime
       field :repeat, type: Boolean
       field :cron_minute, type: String
