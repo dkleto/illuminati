@@ -10,8 +10,12 @@ describe Illuminati::API do
   # Set up the data for test schedule events.
   let(:schedule1_hash) {
       {
-        :command => 'command',
-        :transition_time => 0,
+        :on => true,
+        :bri => 255,
+        :hue => 10000,
+        :sat => 100,
+        :transitiontime => 0,
+        :alert => 'none',
         :time => DateTime.new(2015, 07, 18, 0, 0, 0),
         :repeat => true,
         :cron_minute => '30',
@@ -23,14 +27,17 @@ describe Illuminati::API do
   }
   let(:schedule2_hash) {
       {
-        :command => 'command_2',
-        :transition_time => 2
+        :on => false,
+        :transitiontime => 2
       }
   }
   let(:schedule3_hash) {
     {
-        :command => 'another command',
-        :transition_time => 15,
+        :on => true,
+        :bri => 100,
+        :xy => [0.5, 0.8],
+        :transitiontime => 15,
+        :alert => 'lselect',
         :time => DateTime.new(2015, 07, 18, 0, 0, 0),
         :repeat => false
     }
