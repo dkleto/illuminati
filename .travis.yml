@@ -1,8 +1,6 @@
 language: ruby
 rvm:
   - "2.2.2"
-install:
-  - mkdir -p /var/log/illuminati
 script: bundle exec rspec
 services:
   - mongodb
