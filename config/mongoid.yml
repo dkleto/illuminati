@@ -13,6 +13,14 @@ test:
       database: illuminati-test
       hosts:
         - enlight_mongo:27017
+  options:
+    raise_not_found_error: false
+
+travis:
+  sessions:
+    default:
+      database: illuminati-test
+      hosts:
         - localhost:27017
   options:
     raise_not_found_error: false
