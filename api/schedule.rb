@@ -68,9 +68,14 @@ module Illuminati
       desc "Creates a new schedule event"
       params do
         use :add_update
-        requires :command, type: String
+        optional :on, type: Boolean, default: true
+        optional :bri, type: Integer, values: 0..255
+        optional :hue, type: Integer, values: 0..65535
+        optional :sat, type: Integer, values: 0..255
+        optional :alert, type: String, values: ['none', 'lselect'],
+                 default: 'none'
         requires :time, type: DateTime, default: DateTime.now
-        optional :transition_time, type: Integer, values: 0..1800, default: 0
+        optional :transitiontime, type: Integer, values: 0..1800, default: 0
       end
       post do
         schedule = Hash.new
@@ -88,9 +93,13 @@ module Illuminati
       params do
         requires '_id'
         use :add_update
-        optional :command, type: String
+        optional :on, type: Boolean
+        optional :bri, type: Integer, values: 0..255
+        optional :hue, type: Integer, values: 0..65535
+        optional :sat, type: Integer, values: 0..255
+        optional :alert, type: String, values: ['none', 'lselect']
         optional :time, type: DateTime
-        optional :transition_time, type: Integer, values: 0..1800
+        optional :transitiontime, type: Integer, values: 0..1800
       end
       put ':_id' do
         schedule = Illuminati::Models::Schedule.find(params[:_id])
