@@ -80,7 +80,7 @@ module Illuminati
       post do
         schedule = Hash.new
         declared(params, include_missing: false).each do |key, value|
-          if value
+          if !value.nil?
             schedule[key] = value
           end
         end
@@ -107,7 +107,7 @@ module Illuminati
         values = Hash.new
         declared_params = declared(params, include_missing: false)
         declared_params.each do |key, value|
-          if value
+          if !value.nil?
             values[key] = value
           end
         end
