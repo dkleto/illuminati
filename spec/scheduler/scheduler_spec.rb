@@ -3,8 +3,12 @@ require 'scheduler_helper'
 describe Illuminati::Scheduler do
   let(:job1_hash) {
     {
-      :command => 'command1',
-      :transition_time => 2,
+      :on => true,
+      :bri => 255,
+      :hue => 10000,
+      :sat => 100,
+      :transitiontime => 0,
+      :alert => 'none',
       :time => DateTime.now + 1,
       :repeat => true,
       :cron_minute => '30',
@@ -16,16 +20,18 @@ describe Illuminati::Scheduler do
   }
   let(:job2_hash) {
     {
-      :command => 'command2',
-      :transition_time => 0,
+      :on => false,
+      :transitiontime => 0,
       :time => DateTime.now + 2,
       :repeat => false
     }
   }
   let(:job3_hash) {
     {
-      :command => 'command3',
-      :transition_time => 0,
+      :on => true,
+      :bri => 100,
+      :xy => [0.5, 0.8],
+      :transitiontime => 0,
       :time => DateTime.now - 1,
       :repeat => true,
       :cron_minute => '30',
@@ -37,8 +43,8 @@ describe Illuminati::Scheduler do
   }
   let(:job4_hash) {
     {
-      :command => 'command4',
-      :transition_time => 10,
+      :on => false,
+      :transitiontime => 10,
       :time => DateTime.now + 0.5
     }
   }
