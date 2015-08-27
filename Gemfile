@@ -13,5 +13,4 @@ group :test do
   gem 'rack-test'
   gem 'capybara'
   gem 'selenium-webdriver'
-  gem 'addressable'
 end
