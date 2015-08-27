@@ -12,8 +12,7 @@ describe Illuminati::API do
       {
         :on => true,
         :bri => 255,
-        :hue => 10000,
-        :sat => 100,
+        :huesat => {"hue" => 10000, "sat" => 100},
         :transitiontime => 0,
         :alert => 'none',
         :time => DateTime.new(2015, 07, 18, 0, 0, 0),
@@ -35,7 +34,19 @@ describe Illuminati::API do
     {
         :on => true,
         :bri => 100,
-        :xy => [0.5, 0.8],
+        :xy => {"x" => 0.5, "y" => 0.8},
+        :transitiontime => 15,
+        :alert => 'lselect',
+        :time => DateTime.new(2015, 07, 18, 0, 0, 0),
+        :repeat => false
+    }
+  }
+  let(:schedule4_hash) {
+    {
+        :on => true,
+        :bri => 100,
+        :xy => {"x" => 0.1, "y" => 0.9},
+        :huesat => {"hue" => 100, "sat" => 50},
         :transitiontime => 15,
         :alert => 'lselect',
         :time => DateTime.new(2015, 07, 18, 0, 0, 0),
@@ -57,11 +68,8 @@ describe Illuminati::API do
 
     it 'creates a new schedule event' do
       post_string = '/api/schedule?'
-      post_array = []
-      schedule1_hash.each do |key, value|
-        post_array += ["#{key}=#{value}"]
-      end
-      post_string += post_array.join("&")
+      post_params = Rack::Utils.build_nested_query(schedule1_hash)
+      post_string += post_params
 
       expect {
         post post_string
@@ -71,6 +79,18 @@ describe Illuminati::API do
       schedule1_hash.each do |key, value|
         expect(schedule[key]).to eq(value)
       end
+    end
+
+    it 'refuses to create an event with both huesat and xy params' do
+      post_string = '/api/schedule?'
+      post_params = Rack::Utils.build_nested_query(schedule4_hash)
+      post_string += post_params
+
+      expect {
+        post post_string
+        expect(last_response.status).to eq(400)
+      }.to_not change(Illuminati::Models::Schedule, :count)
+
     end
 
     it 'fails to update a nonexistent schedule event' do

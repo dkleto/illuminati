@@ -5,8 +5,7 @@ describe Illuminati::Scheduler do
     {
       :on => true,
       :bri => 255,
-      :hue => 10000,
-      :sat => 100,
+      :huesat => {"hue" => 10000, "sat" => 100},
       :transitiontime => 0,
       :alert => 'none',
       :time => DateTime.now + 1,
@@ -30,7 +29,7 @@ describe Illuminati::Scheduler do
     {
       :on => true,
       :bri => 100,
-      :xy => [0.5, 0.8],
+      :xy => {"x" => 0.5, "y" => 0.8},
       :transitiontime => 0,
       :time => DateTime.now - 1,
       :repeat => true,
