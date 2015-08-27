@@ -102,8 +102,14 @@ module Illuminati
         use :add_update
         optional :on, type: Boolean
         optional :bri, type: Integer, values: 0..255
-        optional :hue, type: Integer, values: 0..65535
-        optional :sat, type: Integer, values: 0..255
+        optional :huesat, type: Hash do
+          requires :hue, type: Integer, values: 0..65535
+          requires :sat, type: Integer, values: 0..255
+        end
+        optional :xy, type: Hash do
+          requires :x, type: Float, values: 0.0..1.0
+          requires :y, type: Float, values: 0.0..1.0
+        end
         optional :alert, type: String, values: ['none', 'lselect']
         optional :time, type: DateTime
         optional :transitiontime, type: Integer, values: 0..1800
@@ -116,6 +122,11 @@ module Illuminati
         declared_params.each do |key, value|
           if !value.nil?
             values[key] = value
+            if key == 'huesat' then
+              values['xy'] = nil
+            elsif key == 'xy' then
+              values['huesat'] = nil
+            end
           end
         end
         schedule.update_attributes!(values)
