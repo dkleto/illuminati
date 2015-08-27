@@ -42,6 +42,18 @@ describe Illuminati::API do
         :xy => {"x" => 1, "y" => 0.01}
       }
   }
+  let(:invalid_job_hash) {
+    {
+        :on => true,
+        :bri => 100,
+        :xy => {"x" => 0.1, "y" => 0.9},
+        :huesat => {"hue" => 100, "sat" => 50},
+        :transitiontime => 15,
+        :alert => 'lselect',
+        :time => DateTime.new(2015, 07, 18, 0, 0, 0),
+        :repeat => false
+    }
+  }
 
   context "with no schedule events" do
 
@@ -78,18 +90,6 @@ describe Illuminati::API do
       expect(schedule).to have_attributes(huesat_job_hash)
     end
 
-    let(:invalid_job_hash) {
-      {
-          :on => true,
-          :bri => 100,
-          :xy => {"x" => 0.1, "y" => 0.9},
-          :huesat => {"hue" => 100, "sat" => 50},
-          :transitiontime => 15,
-          :alert => 'lselect',
-          :time => DateTime.new(2015, 07, 18, 0, 0, 0),
-          :repeat => false
-      }
-    }
     it 'refuses to create an event with both huesat and xy params' do
       post_params = Rack::Utils.build_nested_query(invalid_job_hash)
       post_string = '/api/schedule?' + post_params
@@ -135,6 +135,20 @@ describe Illuminati::API do
       # Updating with an "xy" value should unset the "huesat" field.
       expected['huesat'] = nil
       expect(schedule).to have_attributes(expected)
+    end
+
+    it 'refuses to update an event with both huesat and xy params' do
+      put_params = Rack::Utils.build_nested_query(invalid_job_hash)
+      put_string = "/api/schedule/#{@schedule1.id}?" + put_params
+
+      expect {
+        put put_string
+        expect(last_response.status).to eq(400)
+      }.to_not change(Illuminati::Models::Schedule, :count)
+      @schedule1.reload
+      schedule = Illuminati::Models::Schedule.find_by(_id: @schedule1.id)
+      expect(schedule).to be_truthy
+      expect(schedule).to have_attributes(huesat_job_hash.stringify_keys)
     end
 
     it "removes a schedule event based on ID" do
