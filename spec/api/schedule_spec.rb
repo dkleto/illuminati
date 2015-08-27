@@ -8,29 +8,23 @@ describe Illuminati::API do
   end
 
   # Set up the data for test schedule events.
-  let(:schedule1_hash) {
-      {
-        :on => true,
-        :bri => 255,
-        :huesat => {"hue" => 10000, "sat" => 100},
-        :transitiontime => 0,
-        :alert => 'none',
-        :time => DateTime.new(2015, 07, 18, 0, 0, 0),
-        :repeat => true,
-        :cron_minute => '30',
-        :cron_hour => '17',
-        :cron_day => '*',
-        :cron_month => '*',
-        :cron_weekday => '1,6'
-      }
+  let(:huesat_job_hash) {
+        {
+          :on => true,
+          :bri => 255,
+          :huesat => {"hue" => 10000, "sat" => 100},
+          :transitiontime => 0,
+          :alert => 'none',
+          :time => DateTime.new(2015, 07, 18, 0, 0, 0),
+          :repeat => true,
+          :cron_minute => '30',
+          :cron_hour => '17',
+          :cron_day => '*',
+          :cron_month => '*',
+          :cron_weekday => '1,6'
+        }
   }
-  let(:schedule2_hash) {
-      {
-        :on => false,
-        :transitiontime => 2
-      }
-  }
-  let(:schedule3_hash) {
+  let(:xy_job_hash) {
     {
         :on => true,
         :bri => 100,
@@ -41,20 +35,15 @@ describe Illuminati::API do
         :repeat => false
     }
   }
-  let(:schedule4_hash) {
-    {
-        :on => true,
-        :bri => 100,
-        :xy => {"x" => 0.1, "y" => 0.9},
-        :huesat => {"hue" => 100, "sat" => 50},
-        :transitiontime => 15,
-        :alert => 'lselect',
-        :time => DateTime.new(2015, 07, 18, 0, 0, 0),
-        :repeat => false
-    }
+  let(:update_job_hash) {
+      {
+        :on => false,
+        :transitiontime => 2
+      }
   }
 
   context "with no schedule events" do
+
     it 'returns an empty collection of schedule events' do
       get '/api/schedules'
       expect(last_response.status).to eq(200)
@@ -66,33 +55,6 @@ describe Illuminati::API do
       expect(last_response.status).to eq(404)
     end
 
-    it 'creates a new schedule event' do
-      post_string = '/api/schedule?'
-      post_params = Rack::Utils.build_nested_query(schedule1_hash)
-      post_string += post_params
-
-      expect {
-        post post_string
-        expect(last_response.status).to eq(201)
-      }.to change(Illuminati::Models::Schedule, :count).by(1)
-      schedule = Illuminati::Models::Schedule.last
-      schedule1_hash.each do |key, value|
-        expect(schedule[key]).to eq(value)
-      end
-    end
-
-    it 'refuses to create an event with both huesat and xy params' do
-      post_string = '/api/schedule?'
-      post_params = Rack::Utils.build_nested_query(schedule4_hash)
-      post_string += post_params
-
-      expect {
-        post post_string
-        expect(last_response.status).to eq(400)
-      }.to_not change(Illuminati::Models::Schedule, :count)
-
-    end
-
     it 'fails to update a nonexistent schedule event' do
       put '/api/schedule/1'
       expect(last_response.status).to eq(404)
@@ -102,12 +64,49 @@ describe Illuminati::API do
       delete '/api/schedule/lkj98737'
       expect(last_response.status).to eq(404)
     end
+
+    it 'creates a new schedule event' do
+      post_params = Rack::Utils.build_nested_query(huesat_job_hash)
+      post_string = '/api/schedule?' + post_params
+
+      expect {
+        post post_string
+        expect(last_response.status).to eq(201)
+      }.to change(Illuminati::Models::Schedule, :count).by(1)
+      schedule = Illuminati::Models::Schedule.last
+      huesat_job_hash.each do |key, value|
+        expect(schedule[key]).to eq(value)
+      end
+    end
+
+    let(:invalid_job_hash) {
+      {
+          :on => true,
+          :bri => 100,
+          :xy => {"x" => 0.1, "y" => 0.9},
+          :huesat => {"hue" => 100, "sat" => 50},
+          :transitiontime => 15,
+          :alert => 'lselect',
+          :time => DateTime.new(2015, 07, 18, 0, 0, 0),
+          :repeat => false
+      }
+    }
+    it 'refuses to create an event with both huesat and xy params' do
+      post_params = Rack::Utils.build_nested_query(invalid_job_hash)
+      post_string = '/api/schedule?' + post_params
+
+      expect {
+        post post_string
+        expect(last_response.status).to eq(400)
+      }.to_not change(Illuminati::Models::Schedule, :count)
+
+    end
   end
 
   context "with schedule event" do
     before do |each|
-      @schedule1 = Illuminati::Models::Schedule.create!(schedule1_hash)
-      @schedule2 = Illuminati::Models::Schedule.create!(schedule3_hash)
+      @schedule1 = Illuminati::Models::Schedule.create(huesat_job_hash)
+      @schedule2 = Illuminati::Models::Schedule.create!(xy_job_hash)
     end
 
     it "returns the collection of schedule events" do
@@ -123,12 +122,9 @@ describe Illuminati::API do
     end
 
     it "updates a schedule event based on ID" do
-      put_string = "/api/schedule/#{@schedule1.id}?"
-      put_array = []
-      schedule2_hash.each do |key, value|
-        put_array += ["#{key}=#{value}"]
-      end
-      put_string += put_array.join("&")
+      put_params = Rack::Utils.build_nested_query(update_job_hash)
+      put_string = "/api/schedule/#{@schedule1.id}?" + put_params
+
       expect {
         put put_string
         expect(last_response.status).to eq(200)
@@ -136,7 +132,7 @@ describe Illuminati::API do
       @schedule1.reload
       schedule = Illuminati::Models::Schedule.find_by(_id: @schedule1.id)
       expect(schedule).to be_truthy
-      schedule1_hash.merge(schedule2_hash).each do |key, value|
+      huesat_job_hash.merge(update_job_hash).each do |key, value|
         expect(schedule[key]).to eq(value)
       end
     end
