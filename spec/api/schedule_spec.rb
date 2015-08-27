@@ -38,7 +38,8 @@ describe Illuminati::API do
   let(:update_job_hash) {
       {
         :on => false,
-        :transitiontime => 2
+        :transitiontime => 2,
+        :xy => {"x" => 1, "y" => 0.01}
       }
   }
 
@@ -74,9 +75,7 @@ describe Illuminati::API do
         expect(last_response.status).to eq(201)
       }.to change(Illuminati::Models::Schedule, :count).by(1)
       schedule = Illuminati::Models::Schedule.last
-      huesat_job_hash.each do |key, value|
-        expect(schedule[key]).to eq(value)
-      end
+      expect(schedule).to have_attributes(huesat_job_hash)
     end
 
     let(:invalid_job_hash) {
@@ -132,9 +131,10 @@ describe Illuminati::API do
       @schedule1.reload
       schedule = Illuminati::Models::Schedule.find_by(_id: @schedule1.id)
       expect(schedule).to be_truthy
-      huesat_job_hash.merge(update_job_hash).each do |key, value|
-        expect(schedule[key]).to eq(value)
-      end
+      expected = huesat_job_hash.merge(update_job_hash).stringify_keys
+      # Updating with an "xy" value should unset the "huesat" field.
+      expected['huesat'] = nil
+      expect(schedule).to have_attributes(expected)
     end
 
     it "removes a schedule event based on ID" do
