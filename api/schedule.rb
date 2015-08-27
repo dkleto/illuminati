@@ -110,6 +110,7 @@ module Illuminati
           requires :x, type: Float, values: 0.0..1.0
           requires :y, type: Float, values: 0.0..1.0
         end
+        mutually_exclusive :huesat, :xy
         optional :alert, type: String, values: ['none', 'lselect']
         optional :time, type: DateTime
         optional :transitiontime, type: Integer, values: 0..1800
