@@ -69,9 +69,16 @@ module Illuminati
       params do
         use :add_update
         optional :on, type: Boolean, default: true
-        optional :bri, type: Integer, values: 0..255
-        optional :hue, type: Integer, values: 0..65535
-        optional :sat, type: Integer, values: 0..255
+        optional :bri, type: Integer, values: 0..255, default: 255
+        optional :huesat, type: Hash do
+          requires :hue, type: Integer, values: 0..65535
+          requires :sat, type: Integer, values: 0..255
+        end
+        optional :xy, type: Hash do
+          requires :x, type: Float, values: 0.0..1.0
+          requires :y, type: Float, values: 0.0..1.0
+        end
+        exactly_one_of :huesat, :xy
         optional :alert, type: String, values: ['none', 'lselect'],
                  default: 'none'
         requires :time, type: DateTime, default: DateTime.now
