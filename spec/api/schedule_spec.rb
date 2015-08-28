@@ -12,16 +12,12 @@ describe Illuminati::API do
         {
           :on => true,
           :bri => 255,
-          :huesat => {"hue" => 10000, "sat" => 100},
+          :huesat => {'hue' => 10000, 'sat' => 100},
           :transitiontime => 0,
           :alert => 'none',
           :time => DateTime.new(2015, 07, 18, 0, 0, 0),
-          :repeat => true,
-          :cron_minute => '30',
-          :cron_hour => '17',
-          :cron_day => '*',
-          :cron_month => '*',
-          :cron_weekday => '1,6'
+          :cron => {'minute' => '30', 'hour' => '17', 'day' => '*',
+                    'month' => '*', 'weekday' => '1,6'}
         }
   }
   let(:xy_job_hash) {
@@ -39,7 +35,8 @@ describe Illuminati::API do
       {
         :on => false,
         :transitiontime => 2,
-        :xy => {"x" => 1, "y" => 0.01}
+        :xy => {"x" => 1, "y" => 0.01},
+        :cron => nil
       }
   }
   let(:invalid_job_hash) {
