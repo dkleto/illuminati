@@ -11,11 +11,7 @@ module Illuminati
       field :transitiontime, type: Integer
       field :time, type: DateTime
       field :repeat, type: Boolean
-      field :cron_minute, type: String
-      field :cron_hour, type: String
-      field :cron_day, type: String
-      field :cron_month, type: String
-      field :cron_weekday, type: String
+      field :cron, type: Hash
     end
   end
 end
