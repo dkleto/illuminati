@@ -9,12 +9,8 @@ describe Illuminati::Scheduler do
       :transitiontime => 0,
       :alert => 'none',
       :time => DateTime.now + 1,
-      :repeat => true,
-      :cron_minute => '30',
-      :cron_hour => '*',
-      :cron_day => '*',
-      :cron_month => '*',
-      :cron_weekday => '*'
+      :cron => {'minute' => '30', 'hour' => '*', 'day' => '*',
+                'month' => '*', 'weekday' => '*'}
     }
   }
   let(:job2_hash) {
@@ -22,7 +18,7 @@ describe Illuminati::Scheduler do
       :on => false,
       :transitiontime => 0,
       :time => DateTime.now + 2,
-      :repeat => false
+      :cron => nil
     }
   }
   let(:job3_hash) {
@@ -32,12 +28,8 @@ describe Illuminati::Scheduler do
       :xy => {"x" => 0.5, "y" => 0.8},
       :transitiontime => 0,
       :time => DateTime.now - 1,
-      :repeat => true,
-      :cron_minute => '30',
-      :cron_hour => '17',
-      :cron_day => '*',
-      :cron_month => '*',
-      :cron_weekday => '1,6'
+      :cron => {'minute' => '30', 'hour' => '17', 'day' => '*',
+                'month' => '*', 'weekday' => '1,6'}
     }
   }
   let(:job4_hash) {
