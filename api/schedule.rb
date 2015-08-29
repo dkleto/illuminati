@@ -30,16 +30,13 @@ module Illuminati
 
     namespace :schedule do
       helpers do
-        params :add_update do
-          optional :repeat, type: Boolean
-          given :repeat do
-            cron_regexp = /^[0-9\/\*,-]+$/
-            requires :cron_minute, type: String, regexp: cron_regexp
-            requires :cron_hour, type: String, regexp: cron_regexp
-            requires :cron_day, type: String, regexp: cron_regexp
-            requires :cron_month, type: String, regexp: cron_regexp
-            requires :cron_weekday, type: String, regexp: cron_regexp
-          end
+        params :cron_params do
+          cron_regexp = /^[0-9\/\*,-]+$/
+          requires :minute, type: String, regexp: cron_regexp
+          requires :hour, type: String, regexp: cron_regexp
+          requires :day, type: String, regexp: cron_regexp
+          requires :month, type: String, regexp: cron_regexp
+          requires :weekday, type: String, regexp: cron_regexp
         end
       end
 
@@ -67,7 +64,9 @@ module Illuminati
 
       desc "Creates a new schedule event"
       params do
-        use :add_update
+        optional :cron, type: Hash do
+          use :cron_params
+        end
         optional :on, type: Boolean, default: true
         optional :bri, type: Integer, values: 0..255, default: 255
         optional :huesat, type: Hash do
@@ -99,7 +98,11 @@ module Illuminati
       desc "Updates a specific schedule event by ID"
       params do
         requires '_id'
-        use :add_update
+        optional :clear_cron
+        optional :cron, type: Hash do
+          use :cron_params
+        end
+        mutually_exclusive :clear_cron, :cron
         optional :on, type: Boolean
         optional :bri, type: Integer, values: 0..255
         optional :huesat, type: Hash do
@@ -123,10 +126,14 @@ module Illuminati
         declared_params.each do |key, value|
           if !value.nil?
             values[key] = value
-            if key == 'huesat' then
-              values['xy'] = nil
-            elsif key == 'xy' then
-              values['huesat'] = nil
+            case key
+              when 'huesat'
+                values['xy'] = nil
+              when 'xy'
+                values['huesat'] = nil
+              when 'clear_cron'
+                values['cron'] = nil
+                values.delete('clear_cron')
             end
           end
         end
