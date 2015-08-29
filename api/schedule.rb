@@ -1,6 +1,10 @@
 module Illuminati
   class Schedule < Grape::API
     format :json
+    rescue_from Grape::Exceptions::ValidationErrors do |e|
+      error! e, 400
+    end
+
     file_opts = File::WRONLY | File::APPEND | File::CREAT
     @logger = Logger.new(File.open(ENV['illuminati.logpath'], file_opts))
     if ENV['RACK_ENV'] == 'production' then
