@@ -3,7 +3,7 @@ development:
     default:
       database: illuminati
       hosts:
-        - enlight_mongo:27017
+        - illuminati_mongo:27017
   options:
     raise_not_found_error: false
 
@@ -12,7 +12,7 @@ test:
     default:
       database: illuminati-test
       hosts:
-        - enlight_mongo:27017
+        - illuminati_mongo:27017
   options:
     raise_not_found_error: false
 
