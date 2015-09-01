@@ -86,6 +86,10 @@ GEM
       rspec-core (~> 3.3.0)
       rspec-expectations (~> 3.3.0)
       rspec-mocks (~> 3.3.0)
+    rspec-activemodel-mocks (1.0.1)
+      activemodel (>= 3.0)
+      activesupport (>= 3.0)
+      rspec-mocks (>= 2.99, < 4.0)
     rspec-core (3.3.2)
       rspec-support (~> 3.3.0)
     rspec-expectations (3.3.1)
@@ -129,6 +133,7 @@ DEPENDENCIES
   rack-cors (~> 0.4.0)
   rack-test
   rspec
+  rspec-activemodel-mocks
   rufus-scheduler
   selenium-webdriver
 

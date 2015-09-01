@@ -14,4 +14,5 @@ group :test do
   gem 'rack-test'
   gem 'capybara'
   gem 'selenium-webdriver'
+  gem 'rspec-activemodel-mocks'
 end
