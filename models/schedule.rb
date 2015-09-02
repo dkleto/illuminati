@@ -10,7 +10,6 @@ module Illuminati
       field :xy, type: Hash
       field :transitiontime, type: Integer
       field :time, type: DateTime
-      field :repeat, type: Boolean
       field :cron, type: Hash
 
       def light_state

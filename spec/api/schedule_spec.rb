@@ -28,7 +28,6 @@ describe Illuminati::API do
         :transitiontime => 15,
         :alert => 'lselect',
         :time => DateTime.new(2015, 07, 18, 0, 0, 0),
-        :repeat => false
     }
   }
   let(:update_job_hash) {
