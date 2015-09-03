@@ -1,8 +1,9 @@
 module Illuminati
   class Scheduler
-    def initialize(scheduler)
+    def initialize(scheduler, hue = nil)
       @schedule = Illuminati::Models::Schedule
       @scheduler = scheduler
+      @hue = hue
     end
 
     def sync
