@@ -50,7 +50,8 @@ describe Illuminati::Scheduler do
   context 'with schedule events' do
     before do |each|
       @s = Rufus::Scheduler.singleton
-      @scheduler = Illuminati::Scheduler.new(@s)
+      @hue = instance_double('Lights', :set_group_state => "none")
+      @scheduler = Illuminati::Scheduler.new(@s, @hue)
       @job1 = Illuminati::Models::Schedule.create!(job1_hash)
       @job2 = Illuminati::Models::Schedule.create!(job2_hash)
       @job3 = Illuminati::Models::Schedule.create!(job3_hash)
