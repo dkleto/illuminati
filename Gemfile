@@ -9,7 +9,7 @@ gem 'grape-swagger'
 gem 'grape_logging'
 gem 'lights'
 
-group :test do
+group :test, :travis do
   gem 'rspec'
   gem 'rack-test'
   gem 'capybara'
