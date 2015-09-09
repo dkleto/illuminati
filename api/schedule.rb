@@ -42,6 +42,16 @@ module Illuminati
           requires :month, type: String, regexp: cron_regexp
           requires :weekday, type: String, regexp: cron_regexp
         end
+        params :colours do
+          optional :huesat, type: Hash do
+            requires :hue, type: Integer, values: 0..65535
+            requires :sat, type: Integer, values: 0..255
+          end
+          optional :xy, type: Hash do
+            requires :x, type: Float, values: 0.0..1.0
+            requires :y, type: Float, values: 0.0..1.0
+          end
+        end
       end
 
       desc "Returns schedule event by ID"
@@ -73,14 +83,7 @@ module Illuminati
         end
         optional :on, type: Boolean, default: true
         optional :bri, type: Integer, values: 0..255, default: 255
-        optional :huesat, type: Hash do
-          requires :hue, type: Integer, values: 0..65535
-          requires :sat, type: Integer, values: 0..255
-        end
-        optional :xy, type: Hash do
-          requires :x, type: Float, values: 0.0..1.0
-          requires :y, type: Float, values: 0.0..1.0
-        end
+        use :colours
         exactly_one_of :huesat, :xy
         optional :alert, type: String, values: ['none', 'lselect'],
                  default: 'none'
@@ -109,14 +112,7 @@ module Illuminati
         mutually_exclusive :clear_cron, :cron
         optional :on, type: Boolean
         optional :bri, type: Integer, values: 0..255
-        optional :huesat, type: Hash do
-          requires :hue, type: Integer, values: 0..65535
-          requires :sat, type: Integer, values: 0..255
-        end
-        optional :xy, type: Hash do
-          requires :x, type: Float, values: 0.0..1.0
-          requires :y, type: Float, values: 0.0..1.0
-        end
+        use :colours
         mutually_exclusive :huesat, :xy
         optional :alert, type: String, values: ['none', 'lselect']
         optional :time, type: DateTime
