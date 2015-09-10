@@ -36,11 +36,13 @@ module Illuminati
       helpers do
         params :cron_params do
           cron_regexp = /^[0-9\/\*,-]+$/
-          requires :minute, type: String, regexp: cron_regexp
-          requires :hour, type: String, regexp: cron_regexp
-          requires :day, type: String, regexp: cron_regexp
-          requires :month, type: String, regexp: cron_regexp
-          requires :weekday, type: String, regexp: cron_regexp
+          optional :cron, type: Hash do
+            requires :minute, type: String, regexp: cron_regexp
+            requires :hour, type: String, regexp: cron_regexp
+            requires :day, type: String, regexp: cron_regexp
+            requires :month, type: String, regexp: cron_regexp
+            requires :weekday, type: String, regexp: cron_regexp
+          end
         end
         params :colours do
           optional :huesat, type: Hash do
@@ -78,9 +80,7 @@ module Illuminati
 
       desc "Creates a new schedule event"
       params do
-        optional :cron, type: Hash do
-          use :cron_params
-        end
+        use :cron_params
         optional :on, type: Boolean, default: true
         optional :bri, type: Integer, values: 0..255, default: 255
         use :colours
@@ -106,9 +106,7 @@ module Illuminati
       params do
         requires '_id'
         optional :clear_cron
-        optional :cron, type: Hash do
-          use :cron_params
-        end
+        use :cron_params
         mutually_exclusive :clear_cron, :cron
         optional :on, type: Boolean
         optional :bri, type: Integer, values: 0..255
