@@ -2,7 +2,7 @@ require 'unit_helper'
 
 require File.expand_path('../../../models/schedule.rb', __FILE__)
 
-describe "Schedule 'light_state' method" do
+describe Illuminati::Models::Schedule do
   let(:fields) {
     {
       :on => true, :bri => 255, :huesat => {'hue' => 35000, 'sat' => 255},
