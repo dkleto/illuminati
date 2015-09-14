@@ -135,6 +135,26 @@ describe Illuminati::API do
       expect(schedule).to have_attributes(expected)
     end
 
+    it "accepts clear_cron and removes cron values" do
+      put_params = Rack::Utils.build_nested_query(update_job_hash)
+      put_string = "/api/schedule/#{@schedule1.id}?" + put_params
+
+      put put_string
+      @schedule1.reload
+      schedule = Illuminati::Models::Schedule.find_by(_id: @schedule1.id)
+      expect(schedule.cron).to be_nil
+    end
+
+    it "unsets huesat field when updating with an xy value" do
+      put_params = Rack::Utils.build_nested_query(update_job_hash)
+      put_string = "/api/schedule/#{@schedule1.id}?" + put_params
+
+      put put_string
+      @schedule1.reload
+      schedule = Illuminati::Models::Schedule.find_by(_id: @schedule1.id)
+      expect(schedule.huesat).to be_nil
+    end
+
     it 'refuses to update an event with both huesat and xy params' do
       put_params = Rack::Utils.build_nested_query(invalid_job_hash)
       put_string = "/api/schedule/#{@schedule1.id}?" + put_params
