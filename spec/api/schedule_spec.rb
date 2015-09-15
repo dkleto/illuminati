@@ -34,8 +34,16 @@ describe Illuminati::API do
       {
         :on => false,
         :transitiontime => 2,
-        :xy => {"x" => 1, "y" => 0.01},
+      }
+  }
+  let(:clear_cron_hash) {
+      {
         :clear_cron => true
+      }
+  }
+  let(:update_xy_hash) {
+      {
+        :xy => {"x" => 1, "y" => 0.01},
       }
   }
   let(:invalid_job_hash) {
@@ -127,16 +135,11 @@ describe Illuminati::API do
       schedule = Illuminati::Models::Schedule.find_by(_id: @schedule1.id)
       expect(schedule).to be_truthy
       expected = huesat_job_hash.merge(update_job_hash).stringify_keys
-      # Cron should be cleared and clear_cron not present in the document.
-      expected.delete('clear_cron')
-      expected['cron'] = nil
-      # Updating with an "xy" value should unset the "huesat" field.
-      expected['huesat'] = nil
       expect(schedule).to have_attributes(expected)
     end
 
     it "accepts clear_cron and removes cron values" do
-      put_params = Rack::Utils.build_nested_query(update_job_hash)
+      put_params = Rack::Utils.build_nested_query(clear_cron_hash)
       put_string = "/api/schedule/#{@schedule1.id}?" + put_params
 
       put put_string
@@ -146,7 +149,7 @@ describe Illuminati::API do
     end
 
     it "unsets huesat field when updating with an xy value" do
-      put_params = Rack::Utils.build_nested_query(update_job_hash)
+      put_params = Rack::Utils.build_nested_query(update_xy_hash)
       put_string = "/api/schedule/#{@schedule1.id}?" + put_params
 
       put put_string
