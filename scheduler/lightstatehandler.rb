@@ -7,8 +7,8 @@ module Illuminati
 
     def call(job, time)
       if @hue.nil? then
-        #TODO: Log this error properly.
-        puts "No lights object provided."
+        $logger.error "No lights object provided"
+        nil
       else
         b = BulbState.new(@schedule.light_state)
         @hue.set_group_state(0,b)
