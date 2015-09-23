@@ -14,6 +14,14 @@ Bundler.require(:default, ENV['RACK_ENV'])
   end
 end
 
+file_opts = File::WRONLY | File::APPEND | File::CREAT
+$logger = Logger.new(File.open(ENV['illuminati.logpath'], file_opts))
+if ENV['RACK_ENV'] == 'production' then
+  $logger.level = Logger::INFO
+else
+  $logger.level = Logger::DEBUG
+end
+
 require 'api'
 require 'illuminati_app'
 scheduler = Illuminati::Scheduler.new(Rufus::Scheduler.singleton)

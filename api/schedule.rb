@@ -5,14 +5,7 @@ module Illuminati
       error! e, 400
     end
 
-    file_opts = File::WRONLY | File::APPEND | File::CREAT
-    @logger = Logger.new(File.open(ENV['illuminati.logpath'], file_opts))
-    if ENV['RACK_ENV'] == 'production' then
-      @logger.level = Logger::INFO
-    else
-      @logger.level = Logger::DEBUG
-    end
-    logger @logger
+    logger $logger
 
     helpers do
       def scheduler_sync
