@@ -8,7 +8,11 @@ require 'boot'
 
 Bundler.require(:default, ENV['RACK_ENV'])
 
-['../../config/initializers/*.rb', '../../models/*.rb', '../../api/*.rb', '../../scheduler/*.rb'].each do |path|
+dependencies = ['../../config/initializers/*.rb', '../../models/*.rb',
+                '../../api/*.rb', '../../scheduler/*.rb',
+                '../../lights/lights.rb']
+
+dependencies.each do |path|
   Dir[File.expand_path(path, __FILE__)].each do |f|
     require f
   end
@@ -22,7 +26,10 @@ else
   $logger.level = Logger::DEBUG
 end
 
+hue = Illuminati.load_lights(ENV['illuminati.lightsconfigpath'], $logger)
+
 require 'api'
 require 'illuminati_app'
-scheduler = Illuminati::Scheduler.new(Rufus::Scheduler.singleton)
+
+scheduler = Illuminati::Scheduler.new(Rufus::Scheduler.singleton, hue)
 scheduler.sync

@@ -9,7 +9,9 @@ module Illuminati
 
     helpers do
       def scheduler_sync
-        scheduler = Illuminati::Scheduler.new(Rufus::Scheduler.singleton)
+        lightsconfig = ENV['illuminati.lightsconfigpath']
+        @hue ||= Illuminati.load_lights(lightsconfig, logger)
+        scheduler = Illuminati::Scheduler.new(Rufus::Scheduler.singleton, @hue)
         scheduler.clear
         scheduler.sync
       end
