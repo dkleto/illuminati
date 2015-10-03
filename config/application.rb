@@ -19,12 +19,19 @@ dependencies.each do |path|
 end
 
 file_opts = File::WRONLY | File::APPEND | File::CREAT
-$logger = Logger.new(File.open(ENV['illuminati.logpath'], file_opts))
 if ENV['RACK_ENV'] == 'production' then
-  $logger.level = Logger::INFO
+  output = File.open(ENV['illuminati.logpath'], file_opts)
+  level = Logger::INFO
+elsif ENV['RACK_ENV'] == 'development' then
+  output = File.open(ENV['illuminati.logpath'], file_opts)
+  level = Logger::DEBUG
 else
-  $logger.level = Logger::DEBUG
+  output = STDOUT
+  level = Logger::DEBUG
 end
+
+$logger = Logger.new(output)
+$logger.level = level
 
 hue = Illuminati.load_lights(ENV['illuminati.lightsconfigpath'], $logger)
 
