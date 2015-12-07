@@ -84,6 +84,7 @@ module Illuminati
                  default: 'none'
         requires :time, type: DateTime, default: DateTime.now
         optional :transitiontime, type: Integer, values: 0..1800, default: 0
+        optional :label, type: String
       end
       post do
         schedule = Hash.new
@@ -110,6 +111,7 @@ module Illuminati
         optional :alert, type: String, values: ['none', 'lselect']
         optional :time, type: DateTime
         optional :transitiontime, type: Integer, values: 0..1800
+        optional :label, type: String
       end
       put ':_id' do
         schedule = Illuminati::Models::Schedule.find(params[:_id])

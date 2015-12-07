@@ -11,6 +11,7 @@ module Illuminati
       field :transitiontime, type: Integer
       field :time, type: DateTime
       field :cron, type: Hash
+      field :label, type: String
 
       def light_state
         state = {}

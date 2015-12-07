@@ -10,6 +10,7 @@ describe Illuminati::API do
   # Set up the data for test schedule events.
   let(:huesat_job_hash) {
         {
+          :label => 'Hue/saturation job',
           :on => true,
           :bri => 255,
           :huesat => {'hue' => 10000, 'sat' => 100},
@@ -22,6 +23,7 @@ describe Illuminati::API do
   }
   let(:xy_job_hash) {
     {
+        :label => 'XY job',
         :on => true,
         :bri => 100,
         :xy => {"x" => 0.5, "y" => 0.8},
