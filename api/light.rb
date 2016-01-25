@@ -25,10 +25,9 @@ module Illuminati
           requires :x, type: Float, values: 0.0..1.0
           requires :y, type: Float, values: 0.0..1.0
         end
-        optional :on, type: Boolean, default: true
-        optional :bri, type: Integer, values: 0..255, default: 255
-        optional :alert, type: String, values: ['none', 'lselect'],
-                 default: 'none'
+        optional :on, type: Boolean
+        optional :bri, type: Integer, values: 0..255
+        optional :alert, type: String, values: ['none', 'lselect']
         optional :transitiontime, type: Integer, values: 0..1800, default: 0
         at_least_one_of :xy, :on, :bri, :alert, :transitiontime
       end
