@@ -44,13 +44,13 @@ module Illuminati
               values[key] = value
             end
           end
-          if @hue.nil? then
-            $logger.info "No lights object available"
-            nil
-          else
-            b = BulbState.new(values)
-            @hue.set_group_state(0,b)
-          end
+        end
+        if @hue.nil? then
+          $logger.info "No lights object available"
+          nil
+        else
+          b = BulbState.new(values)
+          @hue.set_group_state(0,b)
         end
         values.as_json
       end
