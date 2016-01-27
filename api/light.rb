@@ -49,9 +49,14 @@ module Illuminati
           nil
         else
           b = BulbState.new(values)
-          @hue.set_group_state(0,b)
+          begin
+            response = @hue.set_group_state(0,b)
+            response.as_json
+          rescue StandardError => e
+            $logger.error "Error contacting the Hue API: " + e.message
+            error!({error: 'hueContactErr', detail: 'Error contacting the Hue API'}, 500)
+          end
         end
-        values.as_json
       end
 
     end
