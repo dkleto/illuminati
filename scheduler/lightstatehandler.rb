@@ -11,7 +11,11 @@ module Illuminati
         nil
       else
         b = BulbState.new(@schedule.light_state)
-        @hue.set_group_state(0,b)
+        begin
+          response = @hue.set_group_state(0,b)
+        rescue StandardError => e
+          $logger.error "Error contacting the Hue API: " + e.message
+        end
       end
     end
   end
