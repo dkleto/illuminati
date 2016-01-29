@@ -9,8 +9,7 @@ require 'boot'
 Bundler.require(:default, ENV['RACK_ENV'])
 
 dependencies = ['../../config/initializers/*.rb', '../../models/*.rb',
-                '../../api/*.rb', '../../scheduler/*.rb',
-                '../../lights/lights.rb']
+                '../../api/*.rb', '../../scheduler/*.rb']
 
 dependencies.each do |path|
   Dir[File.expand_path(path, __FILE__)].each do |f|
