@@ -17,25 +17,12 @@ dependencies.each do |path|
   end
 end
 
-file_opts = File::WRONLY | File::APPEND | File::CREAT
-if ENV['RACK_ENV'] == 'production' then
-  output = File.open(ENV['illuminati.logpath'], file_opts)
-  level = Logger::INFO
-elsif ENV['RACK_ENV'] == 'development' then
-  output = File.open(ENV['illuminati.logpath'], file_opts)
-  level = Logger::DEBUG
-else
-  output = STDOUT
-  level = Logger::DEBUG
-end
+logger = Illuminati.logger(ENV['illuminati.logpath'], ENV['RACK_ENV'])
 
-$logger = Logger.new(output)
-$logger.level = level
-
-hue = Illuminati.load_lights(ENV['illuminati.lightsconfigpath'], $logger)
+hue = Illuminati.load_lights(ENV['illuminati.lightsconfigpath'], logger)
 
 require 'api'
 require 'illuminati_app'
 
-scheduler = Illuminati::Scheduler.new(Rufus::Scheduler.singleton, hue)
+scheduler = Illuminati::Scheduler.new(Rufus::Scheduler.singleton, hue, logger)
 scheduler.sync

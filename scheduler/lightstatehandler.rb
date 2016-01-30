@@ -1,20 +1,22 @@
 module Illuminati
   class LightStateHandler
-    def initialize(hue, schedule)
+    def initialize(hue, schedule, logger)
       @hue = hue
       @schedule = schedule
+      @logger = logger
     end
 
     def call(job, time)
       if @hue.nil? then
-        $logger.error "No lights object provided"
+        @logger.error "No lights object provided"
         nil
       else
         b = BulbState.new(@schedule.light_state)
         begin
-          response = @hue.set_group_state(0,b)
+          @hue.set_group_state(0,b)
         rescue StandardError => e
-          $logger.error "Error contacting the Hue API: " + e.message
+          @logger.error "Error contacting the Hue API: " + e.message
+          nil
         end
       end
     end

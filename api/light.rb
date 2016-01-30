@@ -5,8 +5,6 @@ module Illuminati
       error! e, 400
     end
 
-    logger $logger
-
     helpers do
       def get_lights
         lightsconfig = ENV['illuminati.lightsconfigpath']
@@ -45,7 +43,7 @@ module Illuminati
           end
         end
         if @hue.nil? then
-          $logger.info "No lights object available"
+          logger.info "No lights object available"
           nil
         else
           b = BulbState.new(values)
@@ -53,7 +51,7 @@ module Illuminati
             response = @hue.set_group_state(0,b)
             response.as_json
           rescue StandardError => e
-            $logger.error "Error contacting the Hue API: " + e.message
+            logger.error "Error contacting the Hue API: " + e.message
             error!({error: 'hueContactErr', detail: 'Error contacting the Hue API'}, 500)
           end
         end

@@ -5,13 +5,12 @@ module Illuminati
       error! e, 400
     end
 
-    logger $logger
-
     helpers do
       def scheduler_sync
         lightsconfig = ENV['illuminati.lightsconfigpath']
         @hue ||= Illuminati.load_lights(lightsconfig, logger)
-        scheduler = Illuminati::Scheduler.new(Rufus::Scheduler.singleton, @hue)
+        scheduler = Illuminati::Scheduler.new(Rufus::Scheduler.singleton,
+            @hue, logger)
         scheduler.clear
         scheduler.sync
       end
