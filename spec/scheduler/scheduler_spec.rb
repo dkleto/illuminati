@@ -39,10 +39,14 @@ describe Illuminati::Scheduler do
       :time => DateTime.now + 0.5
     }
   }
+  let(:logger) {
+    Illuminati.logger(ENV['illuminati.logpath'], ENV['RACK_ENV'])
+  }
+
   context 'with no schedule events' do
     it 'does not schedule any changes' do
       event_count_before = Rufus::Scheduler.singleton.at_jobs.count
-      Illuminati::Scheduler.new(Rufus::Scheduler.singleton)
+      Illuminati::Scheduler.new(Rufus::Scheduler.singleton, nil, logger)
       event_count_after = Rufus::Scheduler.singleton.at_jobs.count
       expect(event_count_after).to eq(event_count_before)
     end
@@ -51,7 +55,7 @@ describe Illuminati::Scheduler do
     before do |each|
       @s = Rufus::Scheduler.new
       @hue = instance_double('Lights', :set_group_state => "none")
-      @scheduler = Illuminati::Scheduler.new(@s, @hue)
+      @scheduler = Illuminati::Scheduler.new(@s, @hue, logger)
       @job1 = Illuminati::Models::Schedule.create!(job1_hash)
       @job2 = Illuminati::Models::Schedule.create!(job2_hash)
       @job3 = Illuminati::Models::Schedule.create!(job3_hash)
