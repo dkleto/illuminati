@@ -5,6 +5,8 @@ module Illuminati
       error! e, 400
     end
 
+    logger Illuminati.logger(ENV['illuminati.logpath'], ENV['RACK_ENV'])
+
     helpers do
       def get_lights
         lightsconfig = ENV['illuminati.lightsconfigpath']
