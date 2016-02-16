@@ -5,7 +5,6 @@ module Illuminati
 
       field :on, type: Boolean
       field :bri, type: Integer
-      field :huesat, type: Hash
       field :alert, type: String
       field :xy, type: Hash
       field :transitiontime, type: Integer
@@ -20,10 +19,6 @@ module Illuminati
         if !alert.nil? then state['alert'] = alert end
         if !transitiontime.nil? then
           state['transitiontime'] = transitiontime
-        end
-        if !huesat.nil? and !huesat['hue'].nil? and !huesat['sat'].nil? then
-          state['hue'] = huesat['hue']
-          state['sat'] = huesat['sat']
         end
         if !xy.nil? and !xy['x'].nil? and !xy['y'].nil? then
           state['xy'] = [xy['x'], xy['y']]

@@ -41,10 +41,6 @@ module Illuminati
           end
         end
         params :colours do
-          optional :huesat, type: Hash do
-            requires :hue, type: Integer, values: 0..65535
-            requires :sat, type: Integer, values: 0..255
-          end
           optional :xy, type: Hash do
             requires :x, type: Float, values: 0.0..1.0
             requires :y, type: Float, values: 0.0..1.0
@@ -80,7 +76,7 @@ module Illuminati
         optional :on, type: Boolean, default: true
         optional :bri, type: Integer, values: 0..255, default: 255
         use :colours
-        exactly_one_of :huesat, :xy
+        requires :xy
         optional :alert, type: String, values: ['none', 'lselect'],
                  default: 'none'
         requires :time, type: DateTime, default: DateTime.now
@@ -108,7 +104,6 @@ module Illuminati
         optional :on, type: Boolean
         optional :bri, type: Integer, values: 0..255
         use :colours
-        mutually_exclusive :huesat, :xy
         optional :alert, type: String, values: ['none', 'lselect']
         optional :time, type: DateTime
         optional :transitiontime, type: Integer, values: 0..1800
@@ -122,14 +117,9 @@ module Illuminati
         declared_params.each do |key, value|
           if !value.nil?
             values[key] = value
-            case key
-              when 'huesat'
-                values['xy'] = nil
-              when 'xy'
-                values['huesat'] = nil
-              when 'clear_cron'
-                values['cron'] = nil
-                values.delete('clear_cron')
+            if key == 'clear_cron' then
+              values['cron'] = nil
+              values.delete('clear_cron')
             end
           end
         end
