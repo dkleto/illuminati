@@ -32,22 +32,6 @@ describe Illuminati::API do
         :time => DateTime.new(2015, 07, 18, 0, 0, 0),
     }
   }
-  let(:update_job_hash) {
-      {
-        :on => false,
-        :transitiontime => 2,
-      }
-  }
-  let(:clear_cron_hash) {
-      {
-        :clear_cron => true
-      }
-  }
-  let(:update_xy_hash) {
-      {
-        :xy => {"x" => 1, "y" => 0.01},
-      }
-  }
 
   context "with no schedule events" do
 
@@ -105,6 +89,10 @@ describe Illuminati::API do
     end
 
     it "updates a schedule event based on ID" do
+      update_job_hash = {
+        :on => false,
+        :transitiontime => 2,
+      }
       put_params = Rack::Utils.build_nested_query(update_job_hash)
       put_string = "/api/schedule/#{@schedule1.id}?" + put_params
 
@@ -120,6 +108,9 @@ describe Illuminati::API do
     end
 
     it "accepts clear_cron and removes cron values" do
+      clear_cron_hash = {
+        :clear_cron => true
+      }
       put_params = Rack::Utils.build_nested_query(clear_cron_hash)
       put_string = "/api/schedule/#{@schedule1.id}?" + put_params
 
