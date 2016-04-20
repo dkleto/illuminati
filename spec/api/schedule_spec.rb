@@ -7,32 +7,6 @@ describe Illuminati::API do
     Illuminati::API
   end
 
-  # Set up the data for test schedule events.
-  let(:job_1_hash) {
-        {
-          :label => 'Hue/saturation job',
-          :on => true,
-          :bri => 255,
-          :xy => {'x' => 0.1, 'y' => 0.6},
-          :transitiontime => 0,
-          :alert => 'none',
-          :time => DateTime.new(2015, 07, 18, 0, 0, 0),
-          :cron => {'minute' => '30', 'hour' => '17', 'day' => '*',
-                    'month' => '*', 'weekday' => '1,6'}
-        }
-  }
-  let(:job_2_hash) {
-    {
-        :label => 'XY job',
-        :on => true,
-        :bri => 100,
-        :xy => {"x" => 0.5, "y" => 0.8},
-        :transitiontime => 15,
-        :alert => 'lselect',
-        :time => DateTime.new(2015, 07, 18, 0, 0, 0),
-    }
-  }
-
   context "with no schedule events" do
 
     it 'returns an empty collection of schedule events' do
@@ -57,7 +31,16 @@ describe Illuminati::API do
     end
 
     it 'creates a new schedule event' do
-      post_params = Rack::Utils.build_nested_query(job_2_hash)
+      creation_hash = {
+          :label => 'Schedule creation test',
+          :on => true,
+          :bri => 100,
+          :xy => {"x" => 0.5, "y" => 0.8},
+          :transitiontime => 15,
+          :alert => 'lselect',
+          :time => DateTime.new(2015, 07, 18, 0, 0, 0),
+      }
+      post_params = Rack::Utils.build_nested_query(creation_hash)
       post_string = '/api/schedule?' + post_params
 
       expect {
@@ -65,12 +48,37 @@ describe Illuminati::API do
         expect(last_response.status).to eq(201)
       }.to change(Illuminati::Models::Schedule, :count).by(1)
       schedule = Illuminati::Models::Schedule.last
-      expect(schedule).to have_attributes(job_2_hash)
+      expect(schedule).to have_attributes(creation_hash)
     end
 
   end
 
-  context "with schedule event" do
+  context "with schedule events" do
+    let(:job_1_hash) {
+      {
+        :label => 'Test schedule 1',
+        :on => true,
+        :bri => 255,
+        :xy => {'x' => 0.1, 'y' => 0.6},
+        :transitiontime => 0,
+        :alert => 'none',
+        :time => DateTime.new(2015, 07, 18, 0, 0, 0),
+        :cron => {'minute' => '30', 'hour' => '17', 'day' => '*',
+                  'month' => '*', 'weekday' => '1,6'}
+      }
+    }
+    let(:job_2_hash) {
+      {
+        :label => 'Test schedule 2',
+        :on => true,
+        :bri => 100,
+        :xy => {"x" => 0.5, "y" => 0.8},
+        :transitiontime => 15,
+        :alert => 'lselect',
+        :time => DateTime.new(2015, 07, 18, 0, 0, 0),
+      }
+    }
+
     before do |each|
       @schedule1 = Illuminati::Models::Schedule.create(job_1_hash)
       @schedule2 = Illuminati::Models::Schedule.create!(job_2_hash)
