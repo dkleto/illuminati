@@ -30,6 +30,25 @@ describe Illuminati::API do
       expect(last_response.status).to eq(404)
     end
 
+    it 'refuses to create schedule with both cron and time values' do
+      conflict_hash = {
+          :label => 'Schedule conflict test',
+          :on => true,
+          :bri => 100,
+          :xy => {"x" => 0.5, "y" => 0.8},
+          :cron => {'minute' => '30', 'hour' => '17', 'day' => '*',
+                  'month' => '*', 'weekday' => '1,6'},
+          :time => DateTime.new(2015, 07, 18, 0, 0, 0),
+      }
+      post_params = Rack::Utils.build_nested_query(conflict_hash)
+      post_string = '/api/schedule?' + post_params
+
+      expect {
+        post post_string
+        expect(last_response.status).to eq(400)
+      }.to_not change(Illuminati::Models::Schedule, :count)
+    end
+
     it 'creates a new schedule event' do
       creation_hash = {
           :label => 'Schedule creation test',

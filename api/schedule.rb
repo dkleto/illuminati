@@ -79,7 +79,8 @@ module Illuminati
         requires :xy
         optional :alert, type: String, values: ['none', 'lselect'],
                  default: 'none'
-        requires :time, type: DateTime, default: DateTime.now
+        optional :time, type: DateTime, default: DateTime.now
+        mutually_exclusive :cron, :time
         optional :transitiontime, type: Integer, values: 0..1800, default: 0
         optional :label, type: String
       end
