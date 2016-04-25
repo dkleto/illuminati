@@ -8,7 +8,6 @@ describe Illuminati::Scheduler do
       :xy => {'x' => 0.2, 'y' => 1},
       :transitiontime => 0,
       :alert => 'none',
-      :time => DateTime.now + 1,
       :cron => {'minute' => '30', 'hour' => '*', 'day' => '*',
                 'month' => '*', 'weekday' => '*'}
     }
@@ -18,7 +17,6 @@ describe Illuminati::Scheduler do
       :on => false,
       :transitiontime => 0,
       :time => DateTime.now + 2,
-      :cron => nil
     }
   }
   let(:job3_hash) {
@@ -27,7 +25,6 @@ describe Illuminati::Scheduler do
       :bri => 100,
       :xy => {"x" => 0.5, "y" => 0.8},
       :transitiontime => 0,
-      :time => DateTime.now - 1,
       :cron => {'minute' => '30', 'hour' => '17', 'day' => '*',
                 'month' => '*', 'weekday' => '1,6'}
     }
@@ -81,12 +78,6 @@ describe Illuminati::Scheduler do
       event_count_after = @s.cron_jobs.count
       expect(event_count_after).to eq(event_count_before + 2)
       # The next scheduled cron job should be job1.
-      [@job1[:time]].each do |time|
-        expect(@s.cron_jobs.find do |job|
-                  job.next_time.strftime(@f_string) == time.strftime(@f_string)
-               end
-              ).to_not be_nil
-      end
     end
     it 'clears all jobs' do
       @s.at (DateTime.now + 1).to_s do

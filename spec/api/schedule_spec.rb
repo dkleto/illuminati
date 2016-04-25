@@ -82,8 +82,6 @@ describe Illuminati::API do
         :transitiontime => 0,
         :alert => 'none',
         :time => DateTime.new(2015, 07, 18, 0, 0, 0),
-        :cron => {'minute' => '30', 'hour' => '17', 'day' => '*',
-                  'month' => '*', 'weekday' => '1,6'}
       }
     }
     let(:job_2_hash) {
@@ -132,6 +130,42 @@ describe Illuminati::API do
       expect(schedule).to be_truthy
       expected = job_1_hash.merge(update_job_hash).stringify_keys
       expect(schedule).to have_attributes(expected)
+    end
+
+    it 'refuses to update schedule with both cron and time values' do
+      conflict_hash = {
+        :label => 'Schedule cron/time exclusivity test',
+        :on => true,
+        :cron => {'minute' => '30', 'hour' => '17', 'day' => '*',
+                  'month' => '*', 'weekday' => '1,6'}
+      }
+      put_params = Rack::Utils.build_nested_query(conflict_hash)
+      put_string = "/api/schedule/#{@schedule1.id}?" + put_params
+
+      expect {
+        put put_string
+        expect(last_response.status).to eq(200)
+      }.to_not change(Illuminati::Models::Schedule, :count)
+      schedule = Illuminati::Models::Schedule.find_by(_id: @schedule1.id)
+      expect(schedule.time).to be_nil
+      expect(schedule.cron).to eq(conflict_hash[:cron])
+    end
+
+    it 'keeps cron and time params mutually exclusive when updating' do
+      conflict_hash = {
+        :label => 'Schedule conflict test',
+        :on => true,
+        :time => DateTime.new(2015, 07, 18, 0, 0, 0),
+        :cron => {'minute' => '30', 'hour' => '17', 'day' => '*',
+                  'month' => '*', 'weekday' => '1,6'}
+      }
+      put_params = Rack::Utils.build_nested_query(conflict_hash)
+      put_string = "/api/schedule/#{@schedule1.id}?" + put_params
+
+      expect {
+        put put_string
+        expect(last_response.status).to eq(400)
+      }.to_not change(Illuminati::Models::Schedule, :count)
     end
 
     it "accepts clear_cron and removes cron values" do

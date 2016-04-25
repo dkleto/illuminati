@@ -20,13 +20,8 @@ module Illuminati
         cron_string = "#{job[:cron][:minute]} #{job[:cron][:hour]} " +
                       "#{job[:cron][:day]} #{job[:cron][:month]} " +
                       "#{job[:cron][:weekday]}"
-        if job[:time] > DateTime.now then
-          handler = LightStateHandler.new(@hue, job, @logger)
-          @scheduler.cron cron_string, handler, {:first_at => job[:time]}
-        else
-          handler = LightStateHandler.new(@hue, job, @logger)
-          @scheduler.cron cron_string, handler
-        end
+        handler = LightStateHandler.new(@hue, job, @logger)
+        @scheduler.cron cron_string, handler
       end
     end
 

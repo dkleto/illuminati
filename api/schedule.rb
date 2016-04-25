@@ -108,6 +108,7 @@ module Illuminati
         optional :alert, type: String, values: ['none', 'lselect']
         optional :time, type: DateTime
         optional :transitiontime, type: Integer, values: 0..1800
+        mutually_exclusive :cron, :time
         optional :label, type: String
       end
       put ':_id' do
@@ -121,6 +122,12 @@ module Illuminati
             if key == 'clear_cron' then
               values['cron'] = nil
               values.delete('clear_cron')
+            end
+            if key == 'cron' then
+              values['time'] = nil
+            end
+            if key == 'time' then
+              values['cron'] = nil
             end
           end
         end
