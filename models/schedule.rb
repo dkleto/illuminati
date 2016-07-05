@@ -11,6 +11,7 @@ module Illuminati
       field :time, type: DateTime
       field :cron, type: Hash
       field :label, type: String
+      field :creationtime, type: DateTime, default: DateTime.now.new_offset(0)
 
       def light_state
         state = {}

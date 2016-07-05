@@ -82,6 +82,7 @@ describe Illuminati::API do
         :transitiontime => 0,
         :alert => 'none',
         :time => DateTime.new(2015, 07, 18, 0, 0, 0),
+        :creationtime => DateTime.new(2015, 07, 18, 0, 0, 0),
       }
     }
     let(:job_2_hash) {
@@ -93,6 +94,7 @@ describe Illuminati::API do
         :transitiontime => 15,
         :alert => 'lselect',
         :time => DateTime.new(2015, 07, 18, 0, 0, 0),
+        :creationtime => DateTime.new(2015, 07, 18, 0, 0, 0),
       }
     }
 
