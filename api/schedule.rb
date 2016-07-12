@@ -91,6 +91,7 @@ module Illuminati
             schedule[key] = value
           end
         end
+        schedule['creationtime'] = DateTime.now.new_offset(0)
         new_schedule = Illuminati::Models::Schedule.create!(schedule)
         scheduler_sync
         new_schedule.as_json
