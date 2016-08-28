@@ -4,7 +4,7 @@ require 'rack/cors'
 
 use Rack::Cors do
   allow do
-    origins 'localhost:8000', '127.0.0.1:8000'
+    origins '*'
     resource '/api/lights/all', headers: :any, methods: [:put, :options]
     resource '/api/schedule*', headers: :any, methods: [:get, :post, :delete, :put, :options]
     resource '/api/schedules', headers: :any, methods: [:get, :options]
