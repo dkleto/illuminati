@@ -81,7 +81,7 @@ module Illuminati
                  default: 'none'
         optional :time, type: DateTime
         exactly_one_of :cron, :time
-        optional :transitiontime, type: Integer, values: 0..1800, default: 0
+        optional :transitiontime, type: Integer, values: 0..63535, default: 0
         optional :label, type: String
       end
       post do
