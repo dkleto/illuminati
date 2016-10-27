@@ -12,6 +12,7 @@ module Illuminati
       level = Logger::DEBUG
     end
 
+    output.sync = true
     logger = Logger.new(output)
     logger.level = level
 
