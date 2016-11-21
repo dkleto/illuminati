@@ -81,7 +81,7 @@ module Illuminati
                  default: 'none'
         optional :time, type: DateTime
         exactly_one_of :cron, :time
-        optional :transitiontime, type: Integer, values: 0..63535, default: 0
+        optional :transitiontime, type: Integer, values: 0..6353500, default: 0
         optional :label, type: String
       end
       post do
@@ -108,7 +108,7 @@ module Illuminati
         use :colours
         optional :alert, type: String, values: ['none', 'lselect']
         optional :time, type: DateTime
-        optional :transitiontime, type: Integer, values: 0..1800
+        optional :transitiontime, type: Integer, values: 0..6353500
         mutually_exclusive :cron, :time
         optional :label, type: String
       end
